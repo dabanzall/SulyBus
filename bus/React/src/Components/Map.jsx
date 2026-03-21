@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import L from "leaflet";
-import { useState, useEffect } from "react";
-import busicon from "./Icons/bus.png"
-import usericon from "./Icons/user.png"
+import { useMap } from "react-leaflet";
+import { useState, useEffect, useRef } from "react";
+import busicon from "../Icons/bus.png"
+import usericon from "../Icons/user.png"
 
 
 
@@ -46,6 +47,20 @@ const busRoute = [
   { lat: 35.5595, lng: 45.4340 },
   { lat: 35.5580, lng: 45.4355 }, // Azadi Street Stop
 ];
+
+function FlyToUser({ userPosition }) {
+  const map = useMap();
+  const hasCentered = useRef(false); // 👈 important
+
+  useEffect(() => {
+    if (userPosition && !hasCentered.current) {
+      map.flyTo([userPosition.lat, userPosition.lng], 16);
+      hasCentered.current = true; // 👈 only run once
+    }
+  }, [userPosition, map]);
+
+  return null;
+}
 
 export default function Map({enableLocation}) {
     const [busPositionIndex, setBusPositionIndex] = useState(0);
@@ -137,12 +152,15 @@ useEffect(() => {
     <MapContainer
   center={[35.5606, 45.4330]}
   zoom={14}
-  style={{ height: "100%", width: "100%" }}
+  className="h-full w-full "
 >
   <TileLayer
     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     attribution='&copy; OpenStreetMap'
   />
+
+    <FlyToUser userPosition={userPosition} />
+
 
   {/* Bus stops */}
   {busStops.map((stop, idx) => (
@@ -188,11 +206,12 @@ useEffect(() => {
       bottom: 0,
       left: 0,
       width: "100%",
-      background: "rgba(255,255,255,0.95)",
+      backgroundColor: "orange",
       padding: "14px",
       textAlign: "center",
       fontWeight: "bold",
       zIndex: 1000,
+      fontSize: "1.5rem",
     }}
   >
     Nearest stop: {nearestStop.name} — ETA: {etaMinutes} min

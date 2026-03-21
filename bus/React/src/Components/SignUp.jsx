@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 
@@ -67,35 +66,7 @@ export default function SignUp() {
 
             <button disabled={!isMatch}  onClick={() => console.log("Hello")} className="btn">Sign up</button>
           </div>
-
-          <div className="mt-4 w-full flex justify-center">
-  <GoogleLogin
-    onSuccess={async (credentialResponse) => {
-      try {
-        const res = await axios.post(
-          "http://localhost:8000/api/google-login/",
-          {
-            token: credentialResponse.credential,
-          }
-        );
-
-        console.log("Google login success:", res.data);
-
-        // Example: store JWT if backend sends one
-        // localStorage.setItem("token", res.data.access);
-
-      } catch (error) {
-        console.error("Google login failed", error);
-      }
-    }}
-    onError={() => {
-      console.log("Google Login Failed");
-    }}
-  />
-</div>
-
-          
-          
+                    
         </div>
         
       </div>
